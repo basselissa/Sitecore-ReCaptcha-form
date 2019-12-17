@@ -15,9 +15,19 @@ namespace Sitecore.SharedSource.Forms.Fields.ReCaptcha.Services
         
         public override bool IsValid(object value)
         {
-            var isValid = reCaptchaService.VerifySync((string) value);
-            RecaptchaContext.RecaptchaValidated = isValid;
-            return isValid;
+            try
+            {
+                
+                var isValid = reCaptchaService.VerifySync((string)value);
+                RecaptchaContext.RecaptchaValidated = isValid;
+                return isValid;
+            }
+            catch(Exception ex)
+            {
+                Sitecore.Diagnostics.Log.Error("Recaptcha Module:: " + ex.Message + value.GetType(), this);
+                return false;
+            }
+            
         }
 
         public override string FormatErrorMessage(string name)

@@ -12,6 +12,7 @@
 @if (Html.Sitecore().IsExperienceFormsEditMode())
 {
     <script type="text/javascript">
+        var reCaptchaWidgetArray = new Object();
         var reCaptchaArray = [];
         var recaptchasRendered = false;
         var loadReCaptchas = function () {
@@ -30,23 +31,39 @@
        @Html.GenerateUnobtrusiveValidationAttributes(m => m.CaptchaValue) />
 @Html.ValidationMessageFor(m => Model.CaptchaValue)
 
-<script type="text/javascript">
+<script type="text/javascript" defer="defer">
+    if (reCaptchaArray === undefined) {
+        var reCaptchaArray = [];
+        var reCaptchaWidgetArray = new Object();
+    }
   reCaptchaArray.push(
     function() {
-      var _captchaInput = window.document.getElementById('@fieldId');
-      window.grecaptcha.render('@(fieldId)_wrapper',
+        var _captchaInput = window.document.getElementById('@fieldId');
+        $($(_captchaInput).closest('form').find('input[type="submit"]')).attr("widgetid", '@fieldId');
+
+        $($(_captchaInput).closest('form').find('input[type="submit"]')).bind('click', { captchaInput: _captchaInput}, function (e) {
+
+            grecaptcha.execute(reCaptchaWidgetArray['@fieldId']);
+            var data = e.data;
+            if (!$(data.captchaInput).val()) {
+                return false;
+            }
+        });
+
+        window.reCaptchaWidgetArray['@fieldId'] = window.grecaptcha.render('@(fieldId)_wrapper',
         {
           'sitekey': '@Model.CaptchaPublicKey',
 		  'size':'invisible',
           'callback': function (token) {
               if (!_captchaInput.value)
               {
-			  setTimeout(function() {
+                  setTimeout(function () {
+
        $($(_captchaInput).closest('form').find('input[type="submit"]')).click();
     }, 200);
 
               }
-            _captchaInput.value = token;
+            _captchaInput.value = token;remote
           },
           'expired-callback': function(args) {
             _captchaInput.value = '';
@@ -56,4 +73,6 @@
   );
 
 </script>
+
+
 <script src="https://www.google.com/recaptcha/api.js?onload=loadReCaptchas&render=explicit&hl=@Sitecore.Context.Language.CultureInfo.TwoLetterISOLanguageName" async defer></script>

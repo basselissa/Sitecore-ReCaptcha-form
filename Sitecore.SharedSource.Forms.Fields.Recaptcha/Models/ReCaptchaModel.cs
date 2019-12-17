@@ -1,7 +1,7 @@
 ﻿using System;
 using Sitecore.ExperienceForms.Models;
 using Sitecore.ExperienceForms.Mvc.Models.Fields;
-using Sitecore.ExperienceForms.ValueProviders;
+//using Sitecore.ExperienceForms.ValueProviders;
 using Sitecore.SharedSource.Forms.Fields.ReCaptcha.Services;
 
 namespace Sitecore.SharedSource.Forms.Fields.ReCaptcha.Models
@@ -14,10 +14,12 @@ namespace Sitecore.SharedSource.Forms.Fields.ReCaptcha.Models
 
         public string CaptchaPublicKey => Sitecore.Configuration.Settings.GetSetting("GoogleCaptchaPublicKey");
 
+        /*
         public void InitializeValue(FieldValueProviderContext context)
         {
             //Irrelevant for recaptcha. No field prefill supported.
         }
+        */
 
         public bool Required { get; set; }
         public bool IsTrackingEnabled { get; set; }

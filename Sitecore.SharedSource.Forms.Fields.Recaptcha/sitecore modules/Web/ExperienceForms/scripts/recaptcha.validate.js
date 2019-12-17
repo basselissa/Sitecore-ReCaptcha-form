@@ -3,7 +3,9 @@ $.validator.setDefaults({ ignore: ":hidden:not(.fxt-captcha)" });
 /**
  * Google Recaptcha
  */
-var reCaptchaArray = [];
+if (reCaptchaArray === undefined) {
+    var reCaptchaArray = [];
+}
 $.validator.unobtrusive.adapters.add("recaptcha", function (options) {
     options.rules["recaptcha"] = true;
     if (options.message) {
@@ -23,6 +25,8 @@ var loadReCaptchas = function () {
     for (var i = 0; i < reCaptchaArray.length; i++) {
         reCaptchaArray[i]();
     }
+    //this code will not work with mulitple recaptcha in the same page
+    /* 
 	$('input[type="submit"]').click(function(){
 	 grecaptcha.execute();
 	 if(!$('.fxt-captcha').val())
@@ -30,4 +34,5 @@ var loadReCaptchas = function () {
 		 return false;
 	 }
 	 });
+     */
 };
